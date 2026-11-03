@@ -1,0 +1,12 @@
+import { signalStoreFeature, withState } from '@ngrx/signals';
+
+export interface <%= className %>State {
+  readonly <%= propertyName %>Loaded: boolean;
+}
+
+const INITIAL: <%= className %>State = { <%= propertyName %>Loaded: false };
+
+/** `with<%= className %>()`: shared store logic, for every store that needs it. */
+export function with<%= className %>() {
+  return signalStoreFeature(withState<<%= className %>State>(INITIAL));
+}

@@ -1,0 +1,13 @@
+import { Component<% if (store) { %>, inject<% } %> } from '@angular/core';<% if (store) { %>
+import { <%= className %>Store } from './<%= fileName %>.store';<% } %>
+
+/** <%= className %> (smart): injects what it shows and passes it down to its presentational parts. */
+@Component({
+  selector: '<%= selector %>',
+  imports: [],
+  templateUrl: './<%= fileName %>.html',
+  styleUrl: './<%= fileName %>.scss',<% if (store) { %>
+  providers: [<%= className %>Store],<% } %>
+})
+export class <%= className %> {<% if (store) { %>
+  protected readonly store = inject(<%= className %>Store);<% } %>}

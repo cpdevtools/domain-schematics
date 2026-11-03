@@ -1,0 +1,25 @@
+{
+  "name": "<%= packageName %>",
+  "version": "0.0.0-MAIN",
+  "private": true,
+  "description": "<%= description %>",
+  "types": "./index.ts",
+  "sideEffects": false,
+  "scripts": {
+    "format": "prettier --write \"**/*.ts\"",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "devDependencies": {
+    "@eslint/js": "<%= v('@eslint/js') %>",
+    "eslint": "<%= v('eslint') %>",
+    "prettier": "<%= v('prettier') %>",
+    "typescript": "<%= v('typescript') %>",
+    "typescript-eslint": "<%= v('typescript-eslint') %>"
+  },
+  "license": "<%= license %>",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "type": "module"
+}

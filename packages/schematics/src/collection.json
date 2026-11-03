@@ -1,0 +1,85 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ng-add": {
+      "description": "Install the domain package schematics: the workspace config, Sheriff, the root scripts and editor settings.",
+      "factory": "./schematics/ng-add/index#ngAdd",
+      "schema": "./schematics/ng-add/schema.json"
+    },
+    "domain": {
+      "description": "A domain package with its layers, configs and wiring.",
+      "factory": "./schematics/domain/index#domain",
+      "schema": "./schematics/domain/schema.json"
+    },
+    "library": {
+      "description": "A simple library in libs/<name>/.",
+      "factory": "./schematics/library/index#library",
+      "schema": "./schematics/library/schema.json"
+    },
+    "layer": {
+      "description": "A layer in an existing domain.",
+      "factory": "./schematics/layer/index#layer",
+      "schema": "./schematics/layer/schema.json"
+    },
+    "testing": {
+      "description": "The domain's testing entry point for test doubles, which only spec files may import.",
+      "factory": "./schematics/testing/index#testing",
+      "schema": "./schematics/testing/schema.json"
+    },
+    "featureset": {
+      "description": "provide-<domain>-feature.ts and routes.ts in provide.",
+      "factory": "./schematics/featureset/index#featureset",
+      "schema": "./schematics/featureset/schema.json"
+    },
+    "feature-component": {
+      "description": "A smart component in feature/<noun>/; --routed or --slot makes it a lazy sub-module.",
+      "factory": "./schematics/feature-component/index#featureComponent",
+      "schema": "./schematics/feature-component/schema.json"
+    },
+    "ui-component": {
+      "description": "A presentational component in ui/<noun>/: input() and output() only.",
+      "factory": "./schematics/ui-component/index#uiComponent",
+      "schema": "./schematics/ui-component/schema.json"
+    },
+    "store": {
+      "description": "A global or component signalStore in data/<noun>/.",
+      "factory": "./schematics/store/index#store",
+      "schema": "./schematics/store/schema.json"
+    },
+    "store-feature": {
+      "description": "A signalStoreFeature, with-<name>.ts in data/<noun>/.",
+      "factory": "./schematics/store-feature/index#storeFeature",
+      "schema": "./schematics/store-feature/schema.json"
+    },
+    "slot": {
+      "description": "A multi-provider token and its provideX() in ui/<noun>/.",
+      "factory": "./schematics/slot/index#slot",
+      "schema": "./schematics/slot/schema.json"
+    },
+    "worker": {
+      "description": "A web worker in data/<noun>/, the function that starts it, its tsconfig and Sheriff entry point.",
+      "factory": "./schematics/worker/index#worker",
+      "schema": "./schematics/worker/schema.json"
+    },
+    "uses": {
+      "description": "Adds a domain to another's uses line, after checking it makes no cycle.",
+      "factory": "./schematics/uses/index#uses",
+      "schema": "./schematics/uses/schema.json"
+    },
+    "move": {
+      "description": "Moves files or symbols to another layer, domain or package and rewrites every import.",
+      "factory": "./schematics/move/index#move",
+      "schema": "./schematics/move/schema.json"
+    },
+    "extract-domain": {
+      "description": "Moves an app folder into a new domain package.",
+      "factory": "./schematics/extract-domain/index#extractDomain",
+      "schema": "./schematics/extract-domain/schema.json"
+    },
+    "publishable": {
+      "description": "Makes a domain or library publishable through git-flow's ng-lib or npm artifact.",
+      "factory": "./schematics/publishable/index#publishable",
+      "schema": "./schematics/publishable/schema.json"
+    }
+  }
+}

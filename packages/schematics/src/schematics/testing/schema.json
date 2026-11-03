@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "CpdevtoolsTesting",
+  "title": "Add a testing entry point to a domain",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "description": "The domain whose test doubles other packages' specs need.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "Which domain?"
+    }
+  },
+  "required": ["domain"]
+}

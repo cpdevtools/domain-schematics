@@ -1,0 +1,31 @@
+import { InjectionToken, type Provider<% if (lazy) { %>, type Type<% } %> } from '@angular/core';
+<% if (!lazy) { %>
+/** What fills the <%= domainNames.className %> <%= name %> slot. */
+export interface <%= domainNames.className %><%= className %> {
+  readonly id: string;
+}
+
+/** The <%= name %> slot: what other domains add to <%= domainNames.className %> (`provide<%= domainNames.className %><%= className %>`). */
+export const <%= domainNames.constantName %>_<%= constantName %>S = new InjectionToken<readonly <%= domainNames.className %><%= className %>[]>(
+  '<%= prefix %>.<%= domainNames.fileName %>-<%= fileName %>s',
+  { factory: () => [] },
+);
+
+export function provide<%= domainNames.className %><%= className %>(item: <%= domainNames.className %><%= className %>): Provider {
+  return { provide: <%= domainNames.constantName %>_<%= constantName %>S, useValue: item, multi: true };
+}
+<% } else { %>
+/**
+ * The <%= name %> slot: components other domains show in <%= domainNames.className %>, each loaded when first
+ * shown so what it needs stays out of the initial bundle (`provide<%= domainNames.className %><%= className %>`).
+ */
+export const <%= domainNames.constantName %>_<%= constantName %>S = new InjectionToken<readonly (() => Promise<Type<unknown>>)[]>(
+  '<%= prefix %>.<%= domainNames.fileName %>-<%= fileName %>s',
+  { factory: () => [] },
+);
+
+/** `load`: a dynamic `import()` of the component. */
+export function provide<%= domainNames.className %><%= className %>(load: () => Promise<Type<unknown>>): Provider {
+  return { provide: <%= domainNames.constantName %>_<%= constantName %>S, useValue: load, multi: true };
+}
+<% } %>

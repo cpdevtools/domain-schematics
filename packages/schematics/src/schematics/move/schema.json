@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "CpdevtoolsMove",
+  "title": "Move files or symbols and rewrite every import",
+  "type": "object",
+  "properties": {
+    "from": { "type": "string", "description": "A file or folder to move.", "$default": { "$source": "argv", "index": 0 } },
+    "to": { "type": "string", "description": "Where it goes.", "$default": { "$source": "argv", "index": 1 } },
+    "symbol": { "type": "string", "description": "With two files: the exported symbol to move between them instead of the file." },
+    "manifest": { "type": "string", "description": "A JSON file with many moves: { \"files\": { \"<from>\": \"<to>\" }, \"symbols\": [{ \"name\", \"from\", \"to\" }] }." }
+  }
+}

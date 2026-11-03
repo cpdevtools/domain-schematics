@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "CpdevtoolsSlot",
+  "title": "Create a slot",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The slot, named for what fills it: nav-item, settings-section.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "What is the slot called?"
+    },
+    "domain": {
+      "type": "string",
+      "description": "The domain that shows what the slot holds.",
+      "$default": { "$source": "argv", "index": 1 },
+      "x-prompt": "Which domain declares it?"
+    },
+    "path": { "type": "string", "description": "The noun folder inside ui/ (default: the name)." },
+    "lazy": { "type": "boolean", "default": false, "description": "Takes a loader (() => import(...)) instead of a value." }
+  },
+  "required": ["name", "domain"]
+}

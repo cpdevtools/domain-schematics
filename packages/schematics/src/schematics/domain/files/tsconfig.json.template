@@ -1,0 +1,32 @@
+{
+  "extends": "<%= up %>tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    // The root's `paths` are for Sheriff; this package resolves the others through their workspace
+    // links, so `rootDir` keeps it to its own sources.
+    "paths": {},
+    "noEmit": true,
+    // Source only: nothing is emitted, declarations included.
+    "declaration": false,
+    "declarationMap": false,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": [],
+    "moduleResolution": "bundler",
+    "module": "preserve",
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true
+  },
+  "angularCompilerOptions": {
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true
+  },
+  "include": ["**/*.ts"],
+  // Restated on purpose: the root config's `exclude` lists `<%= packages %>`, which would
+  // exclude this whole project if inherited.
+  "exclude": ["node_modules"]
+}

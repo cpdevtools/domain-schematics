@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "CpdevtoolsUiComponent",
+  "title": "Create a presentational component",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The component, named for what it draws: quantity-stepper, price-display.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "What is the component called?"
+    },
+    "domain": {
+      "type": "string",
+      "description": "The domain.",
+      "$default": { "$source": "argv", "index": 1 },
+      "x-prompt": "Which domain?"
+    },
+    "path": { "type": "string", "description": "A noun folder inside the layer to put it under (ui/<path>/<name>/)." },
+    "presenter": { "type": "boolean", "default": false, "description": "Give it a presenter (<name>.presenter.ts) for logic that outgrows the class." }
+  },
+  "required": ["name", "domain"]
+}

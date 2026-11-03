@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "CpdevtoolsDomain",
+  "title": "Create a domain package",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The domain, a noun: cart, replays, maps.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "What is the domain called (a noun)?"
+    },
+    "layers": {
+      "type": "string",
+      "default": "provide,feature,ui,data,model",
+      "description": "The layers it starts with, comma-separated."
+    },
+    "deps": {
+      "type": "string",
+      "default": "",
+      "description": "The business domains it uses (its `uses` line), comma-separated."
+    },
+    "shared": {
+      "type": "boolean",
+      "default": false,
+      "description": "A shared domain: a toolkit any domain may use, that never imports a business domain."
+    },
+    "description": {
+      "type": "string",
+      "description": "The package.json description."
+    }
+  },
+  "required": ["name"]
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "CpdevtoolsExtractDomain",
+  "title": "Move an app folder into a new domain package",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The new domain.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "What is the domain called?"
+    },
+    "from": {
+      "type": "string",
+      "description": "The app folder to move (apps/web/src/app/cart).",
+      "$default": { "$source": "argv", "index": 1 },
+      "x-prompt": "Which folder moves into it?"
+    },
+    "layer": { "type": "string", "default": "feature", "description": "The layer the folder's files land in." },
+    "layers": { "type": "string", "default": "provide,feature,ui,data,model", "description": "The layers the domain starts with." },
+    "deps": { "type": "string", "default": "", "description": "The business domains it uses." },
+    "shared": { "type": "boolean", "default": false, "description": "A shared domain." }
+  },
+  "required": ["name", "from"]
+}

@@ -1,0 +1,14 @@
+// The publishable build (ng-packagr): declarations on, and every workspace dependency resolved to
+// its built `dist/`, so the package compiles against built dependencies, not their sources.
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "paths": {<% for (const [i, [name, target]] of Object.entries(paths).entries()) { %>
+      "<%= name %>": ["<%= target %>"]<%= i < Object.keys(paths).length - 1 ? ',' : '' %><% } %>
+    }
+  },
+  "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.worker.ts"]
+}
