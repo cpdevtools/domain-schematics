@@ -15,8 +15,8 @@ importers:
         specifier: ^1.3.0
         version: 1.3.0(chokidar@3.6.0)(supports-color@8.1.1)
       '@cpdevtools/ts-dev-utilities-cli':
-        specifier: ^1.2.1
-        version: 1.2.1
+        specifier: ^1.2.2
+        version: 1.2.2
       '@eslint/js':
         specifier: ^9.18.0
         version: 9.39.5
@@ -54,8 +54,8 @@ importers:
         specifier: ^22.1.0
         version: 22.2.5(chokidar@3.6.0)
       '@cpdevtools/ts-dev-utilities':
-        specifier: ^1.2.1
-        version: 1.2.1
+        specifier: ^1.2.2
+        version: 1.2.2
       ts-morph:
         specifier: ^28.0.0
         version: 28.0.0
@@ -135,13 +135,17 @@ packages:
     resolution: {integrity: sha512-3yvO/Ny5BxtI5Xsm1zSNJ1kgKYagVhHv135KC2JoCBEXOI8jq9DGuxHCegdSHv1UMiUx1uNlDXywVuAvaqMvnw==, tarball: https://npm.pkg.github.com/download/@cpdevtools/git-flow/1.3.0/b09b531bf990df3f39c958ac32d5ae0d305fc828}
     engines: {node: '>=24'}
 
-  '@cpdevtools/ts-dev-utilities-cli@1.2.1':
-    resolution: {integrity: sha512-Md2NCChvhUA0oxV22gSCwY72FcL2oPTgzaqoT3lKhbu/3nGolz0P7WpdJ7aP1+wIwdQGAux9IJhc0S5X/Qtnkw==, tarball: https://npm.pkg.github.com/download/@cpdevtools/ts-dev-utilities-cli/1.2.1/f2914a391876c5949623c0264ee16c9ec27e8a7c}
+  '@cpdevtools/ts-dev-utilities-cli@1.2.2':
+    resolution: {integrity: sha512-w3QT766y3llSB2IJqiD4KXhhTbz+5apQP4C/cy5iqaxfWOnVBIFBh36XkLJAX4gO9aEIEpIa5JEmnFdHd1wLsg==, tarball: https://npm.pkg.github.com/download/@cpdevtools/ts-dev-utilities-cli/1.2.2/0cec0184d604c5825b3b4d09596c7d68085ce998}
     engines: {node: '>=24'}
     hasBin: true
 
   '@cpdevtools/ts-dev-utilities@1.2.1':
     resolution: {integrity: sha512-uVDG/+cJ2Jpwc71bRCfPaJLJca98shQcFPRvYWueA/aCIFiBNbirgo6cqQazgk6i3ZrujN/5bvguIEGIKW+eMQ==, tarball: https://npm.pkg.github.com/download/@cpdevtools/ts-dev-utilities/1.2.1/68f438348bc247d5842a2111174921fb703f8f65}
+    engines: {node: '>=24'}
+
+  '@cpdevtools/ts-dev-utilities@1.2.2':
+    resolution: {integrity: sha512-qwKJyVPLwZm1xv3D+dMuqCjYzhAC5S9hqb1+4y/uuylDEVkWfLqaBN7KjOpy7c8pf7aAy2SRIK/NsRmux95iUA==, tarball: https://npm.pkg.github.com/download/@cpdevtools/ts-dev-utilities/1.2.2/00ff050ad1a7e0cfccbc475ca0f2d1f7999f07ed}
     engines: {node: '>=24'}
 
   '@eslint-community/eslint-utils@4.10.1':
@@ -1704,11 +1708,19 @@ snapshots:
     transitivePeerDependencies:
       - chokidar
 
-  '@cpdevtools/ts-dev-utilities-cli@1.2.1':
+  '@cpdevtools/ts-dev-utilities-cli@1.2.2':
     dependencies:
-      '@cpdevtools/ts-dev-utilities': 1.2.1
+      '@cpdevtools/ts-dev-utilities': 1.2.2
 
   '@cpdevtools/ts-dev-utilities@1.2.1':
+    dependencies:
+      change-case: 5.4.4
+      globby: 14.1.0
+      jsonc-parser: 3.3.1
+      semver: 7.8.5
+      yaml: 2.9.1
+
+  '@cpdevtools/ts-dev-utilities@1.2.2':
     dependencies:
       change-case: 5.4.4
       globby: 14.1.0
