@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "CpdevtoolsWorker",
+  "title": "Create a web worker",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The worker, named for what it does: ingest, sync.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "What is the worker called?"
+    },
+    "domain": {
+      "type": "string",
+      "description": "The domain.",
+      "$default": { "$source": "argv", "index": 1 },
+      "x-prompt": "Which domain?"
+    },
+    "path": { "type": "string", "description": "The noun folder inside data/ (default: the name)." }
+  },
+  "required": ["name", "domain"]
+}

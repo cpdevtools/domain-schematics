@@ -1,0 +1,10 @@
+{
+  "$schema": "../../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ensure-config": {
+      "version": "0.1.0",
+      "description": "Workspaces set up before ng add: the domainPackages config, the root angular.json with the collection, the generate.* scripts.",
+      "factory": "./ensure-config/index#ensureConfig"
+    }
+  }
+}

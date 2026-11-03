@@ -1,0 +1,4 @@
+import type { Routes } from '@angular/router';
+
+/** The <%= className %> pages' routes (`provide<%= className %>Feature` adds them as top-level routes). */
+export const <%= constantName %>_ROUTES: Routes = [];

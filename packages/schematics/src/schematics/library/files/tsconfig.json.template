@@ -1,0 +1,20 @@
+{
+  "extends": "<%= up %>tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "paths": {},
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false,
+    "lib": ["ES2022", "DOM"],
+    "types": [],
+    "moduleResolution": "bundler",
+    "module": "preserve",
+    "isolatedModules": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
+}

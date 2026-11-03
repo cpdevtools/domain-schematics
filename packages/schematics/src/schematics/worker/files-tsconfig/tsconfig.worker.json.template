@@ -1,0 +1,10 @@
+// The workers, which the app's Angular builder bundles: no DOM, the worker globals instead.
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "WebWorker"],
+    "types": []
+  },
+  "include": ["**/*.worker.ts"],
+  "exclude": ["node_modules"]
+}

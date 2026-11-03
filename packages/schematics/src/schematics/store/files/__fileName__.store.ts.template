@@ -1,0 +1,13 @@
+import { signalStore, withState } from '@ngrx/signals';
+
+interface <%= className %>State {
+  readonly loaded: boolean;
+}
+
+const INITIAL: <%= className %>State = { loaded: false };
+
+/** <%= className %>: <% if (global) { %>app-wide state, one instance for the app<% } else { %>the state of the page or subtree that provides it, created and destroyed with it<% } %>. */
+export const <%= className %>Store = signalStore(<% if (global) { %>
+  { providedIn: 'root' },<% } %>
+  withState<<%= className %>State>(INITIAL),
+);

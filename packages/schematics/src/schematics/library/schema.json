@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "CpdevtoolsLibrary",
+  "title": "Create a simple library",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The library's name: framework-free code or generic helpers.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "What is the library called?"
+    },
+    "description": { "type": "string", "description": "The package.json description." }
+  },
+  "required": ["name"]
+}

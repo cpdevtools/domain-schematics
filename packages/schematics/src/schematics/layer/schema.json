@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "CpdevtoolsLayer",
+  "title": "Add a layer to a domain",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "description": "The domain.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "Which domain?"
+    },
+    "name": {
+      "type": "string",
+      "description": "The layer: provide, feature, ui, data or model.",
+      "$default": { "$source": "argv", "index": 1 },
+      "x-prompt": "Which layer?"
+    }
+  },
+  "required": ["domain", "name"]
+}

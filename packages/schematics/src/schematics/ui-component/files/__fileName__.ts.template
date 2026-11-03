@@ -1,0 +1,15 @@
+import { Component } from '@angular/core';<% if (presenter) { %>
+import { <%= className %>Presenter } from './<%= fileName %>.presenter';<% } %>
+
+/**
+ * <%= className %> (presentational): draws what it takes through `input()` and reports what the user does
+ * through `output()`; no app state.
+ */
+@Component({
+  selector: '<%= selector %>',
+  imports: [],
+  templateUrl: './<%= fileName %>.html',
+  styleUrl: './<%= fileName %>.scss',<% if (presenter) { %>
+  providers: [<%= className %>Presenter],<% } %>
+})
+export class <%= className %> {}

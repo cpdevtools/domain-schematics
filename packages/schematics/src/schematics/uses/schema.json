@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "CpdevtoolsUses",
+  "title": "Declare that a domain uses another",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "description": "The domain that imports.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "Which domain uses another?"
+    },
+    "uses": {
+      "type": "string",
+      "description": "The domain it uses.",
+      "$default": { "$source": "argv", "index": 1 },
+      "x-prompt": "Which domain does it use?"
+    }
+  },
+  "required": ["domain", "uses"]
+}

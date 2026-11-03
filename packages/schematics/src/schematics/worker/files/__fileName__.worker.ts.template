@@ -1,0 +1,6 @@
+/// <reference lib="webworker" />
+/** The <%= name %> worker: work off the main thread; the app starts it with `start<%= className %>Worker()`. */
+
+addEventListener('message', ({ data }: MessageEvent<unknown>) => {
+  postMessage(data);
+});

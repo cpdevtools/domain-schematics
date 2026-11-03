@@ -1,0 +1,10 @@
+import { signalStore, withState } from '@ngrx/signals';
+
+interface <%= className %>State {
+  readonly loaded: boolean;
+}
+
+const INITIAL: <%= className %>State = { loaded: false };
+
+/** {@link <%= className %>}'s component store: the state of the page, created and destroyed with it. */
+export const <%= className %>Store = signalStore(withState<<%= className %>State>(INITIAL));

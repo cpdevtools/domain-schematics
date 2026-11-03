@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "CpdevtoolsFeatureComponent",
+  "title": "Create a smart component",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The component, named for the domain thing it binds: cart-item-quantity, saved-carts-page.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "What is the component called?"
+    },
+    "domain": {
+      "type": "string",
+      "description": "The domain.",
+      "$default": { "$source": "argv", "index": 1 },
+      "x-prompt": "Which domain?"
+    },
+    "path": {
+      "type": "string",
+      "description": "A noun folder inside the layer to put it under (feature/<path>/<name>/)."
+    },
+    "routed": {
+      "type": "boolean",
+      "default": false,
+      "description": "A routed page: its own sub-module, lazy loaded from the domain's routes."
+    },
+    "route": {
+      "type": "string",
+      "description": "The route path (default: the name without a -page suffix)."
+    },
+    "slot": {
+      "type": "string",
+      "description": "The provideX() of a slot it fills (its own sub-module, registered in the featureset)."
+    },
+    "slotDomain": {
+      "type": "string",
+      "description": "The domain declaring the slot (default: this domain)."
+    },
+    "store": {
+      "type": "boolean",
+      "default": false,
+      "description": "Give it a component store beside it."
+    }
+  },
+  "required": ["name", "domain"]
+}
