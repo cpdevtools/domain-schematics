@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "CpdevtoolsPublishable",
+  "title": "Make a domain or library publishable",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The domain or library.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "Which domain or library?"
+    },
+    "registry": {
+      "type": "string",
+      "description": "The registry id from .publish/registries.yml (default: the first npm one)."
+    }
+  },
+  "required": ["name"]
+}

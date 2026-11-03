@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "CpdevtoolsFeatureset",
+  "title": "Add a featureset to a domain",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "description": "The domain.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "Which domain?"
+    },
+    "skipApps": {
+      "type": "boolean",
+      "default": false,
+      "description": "Do not list provide<Domain>Feature() in the apps' app.config.ts."
+    }
+  },
+  "required": ["domain"]
+}

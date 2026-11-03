@@ -1,0 +1,127 @@
+{
+  "name": "@cpdevtools/schematics",
+  "version": "0.0.0-MAIN",
+  "description": "Angular schematics for domain packages: one pnpm package per domain, layered, with Sheriff boundaries",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "domain-schematics": "./dist/bin.js"
+  },
+  "scripts": {
+    "build": "wireit",
+    "format": "prettier --write \"src/**/*.ts\" \"tools/**/*.mjs\" \"*.{json,md}\" \"!src/**/files/**\"",
+    "github.actions.build": "tsc -p tsconfig.build.json && node tools/copy-assets.mjs",
+    "github.actions.pack": "gitflow pack",
+    "github.actions.test": "vitest run",
+    "lint": "wireit",
+    "test": "wireit",
+    "typecheck": "wireit"
+  },
+  "dependencies": {
+    "@angular-devkit/core": "^22.1.0",
+    "@angular-devkit/schematics": "^22.1.0",
+    "@cpdevtools/ts-dev-utilities": "^1.2.1",
+    "ts-morph": "^28.0.0",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@types/node": "^24.0.0",
+    "eslint": "^9.18.0",
+    "prettier": "^3.8.1",
+    "rxjs": "^7.8.2",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.69.0",
+    "vitest": "^4.0.8"
+  },
+  "peerDependencies": {
+    "prettier": "^3.8.1"
+  },
+  "keywords": [
+    "angular",
+    "domain-driven",
+    "monorepo",
+    "schematics",
+    "sheriff"
+  ],
+  "author": "CPDevTools",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cpdevtools/domain-schematics.git",
+    "directory": "packages/schematics"
+  },
+  "bugs": "https://github.com/cpdevtools/domain-schematics/issues",
+  "homepage": "https://github.com/cpdevtools/domain-schematics#readme",
+  "engines": {
+    "node": ">=24"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./kit": {
+      "types": "./dist/kit/index.d.ts",
+      "default": "./dist/kit/index.js"
+    },
+    "./sheriff": {
+      "types": "./dist/sheriff/index.d.ts",
+      "default": "./dist/sheriff/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "ng-update": {
+    "migrations": "./dist/migrations/migration.json"
+  },
+  "peerDependenciesMeta": {
+    "prettier": {
+      "optional": true
+    }
+  },
+  "schematics": "./dist/collection.json",
+  "wireit": {
+    "build": {
+      "command": "tsc -p tsconfig.build.json && node tools/copy-assets.mjs",
+      "files": [
+        "src/**",
+        "tools/copy-assets.mjs",
+        "tsconfig.json",
+        "tsconfig.build.json"
+      ],
+      "output": [
+        "dist/**"
+      ]
+    },
+    "test": {
+      "command": "vitest run",
+      "dependencies": [
+        "build"
+      ],
+      "files": [
+        "src/**",
+        "vitest.config.mts"
+      ],
+      "output": []
+    },
+    "typecheck": {
+      "command": "tsc --noEmit -p tsconfig.json",
+      "files": [
+        "src/**/*.ts",
+        "tsconfig.json"
+      ],
+      "output": []
+    },
+    "lint": {
+      "command": "eslint src",
+      "files": [
+        "src/**/*.ts",
+        "eslint.config.mjs"
+      ],
+      "output": []
+    }
+  }
+}

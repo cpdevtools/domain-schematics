@@ -1,0 +1,13 @@
+// The publishable build: declarations and JavaScript into `dist/`.
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler"
+  },
+  "exclude": ["node_modules", "dist", "**/*.spec.ts"]
+}

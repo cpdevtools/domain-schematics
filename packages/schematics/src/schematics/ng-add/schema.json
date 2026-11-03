@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "CpdevtoolsNgAdd",
+  "title": "Install the domain package schematics",
+  "type": "object",
+  "properties": {
+    "scope": {
+      "type": "string",
+      "description": "What every package name starts with, up to the domain name: '@scope/' or '@scope/product-'. Inferred from the existing packages when omitted."
+    },
+    "prefix": {
+      "type": "string",
+      "description": "The selector prefix of the workspace's components. Inferred from an app's angular.json when omitted."
+    },
+    "apps": { "type": "string", "default": "apps", "description": "The folder holding the apps." },
+    "packages": {
+      "type": "string",
+      "default": "packages",
+      "description": "The folder holding the domain packages."
+    },
+    "libs": {
+      "type": "string",
+      "default": "libs",
+      "description": "The folder holding the simple libraries."
+    },
+    "skipInstall": {
+      "type": "boolean",
+      "default": false,
+      "description": "Do not run the package manager after adding Sheriff."
+    }
+  }
+}

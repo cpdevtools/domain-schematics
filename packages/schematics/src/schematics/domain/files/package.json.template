@@ -1,0 +1,45 @@
+{
+  "name": "<%= packageName %>",
+  "version": "0.0.0-MAIN",
+  "private": true,
+  "description": "<%= description %>",
+  "types": "./index.ts",
+  "sideEffects": false,
+  "scripts": {
+    "format": "prettier --write \"**/*.ts\"",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {<% for (const [i, dep] of deps.entries()) { %>
+    "<%= dep %>": "workspace:*",<% } %>
+    "tslib": "<%= v('tslib') %>"
+  },
+  "devDependencies": {
+    "@angular/build": "<%= v('@angular/build') %>",
+    "@angular/cli": "<%= v('@angular/cli') %>",
+    "@angular/common": "<%= v('@angular/common') %>",
+    "@angular/compiler": "<%= v('@angular/compiler') %>",
+    "@angular/compiler-cli": "<%= v('@angular/compiler-cli') %>",
+    "@angular/core": "<%= v('@angular/core') %>",
+    "@angular/platform-browser": "<%= v('@angular/platform-browser') %>",
+    "@angular/router": "<%= v('@angular/router') %>",
+    "@eslint/js": "<%= v('@eslint/js') %>",
+    "angular-eslint": "<%= v('angular-eslint') %>",
+    "eslint": "<%= v('eslint') %>",
+    "jsdom": "<%= v('jsdom') %>",
+    "prettier": "<%= v('prettier') %>",
+    "rxjs": "<%= v('rxjs') %>",
+    "typescript": "<%= v('typescript') %>",
+    "typescript-eslint": "<%= v('typescript-eslint') %>",
+    "vitest": "<%= v('vitest') %>"
+  },
+  "peerDependencies": {
+    "@angular/core": "<%= v('@angular/core') %>"
+  },
+  "license": "<%= license %>",
+  "exports": {
+    ".": "./index.ts"<% for (const layer of layers) { %>,
+    "./<%= layer %>": "./<%= layer %>/index.ts"<% } %>
+  },
+  "type": "module"
+}

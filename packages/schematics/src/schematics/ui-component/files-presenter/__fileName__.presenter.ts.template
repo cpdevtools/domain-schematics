@@ -1,0 +1,5 @@
+import { Injectable } from '@angular/core';
+
+/** {@link <%= className %>}'s presentational logic, provided by the component for itself; no app state. */
+@Injectable()
+export class <%= className %>Presenter {}

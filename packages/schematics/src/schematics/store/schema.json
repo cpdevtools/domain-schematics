@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "CpdevtoolsStore",
+  "title": "Create a signalStore",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The store, named for what it holds: cart, carts.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "What is the store called?"
+    },
+    "domain": {
+      "type": "string",
+      "description": "The domain.",
+      "$default": { "$source": "argv", "index": 1 },
+      "x-prompt": "Which domain?"
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["global", "component"],
+      "default": "global",
+      "description": "global (providedIn root) or component (provided by a smart component)."
+    },
+    "path": { "type": "string", "description": "The noun folder inside data/ (default: the name)." }
+  },
+  "required": ["name", "domain"]
+}

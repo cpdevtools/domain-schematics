@@ -1,0 +1,7 @@
+/**
+ * Starts the <%= name %> worker (`<%= fileName %>.worker.ts`), bundled by the Angular builder. The
+ * `new Worker(new URL(...), ...)` shape is what the builder recognises, so it stays inline.
+ */
+export function start<%= className %>Worker(): Worker {
+  return new Worker(new URL('./<%= fileName %>.worker', import.meta.url), { type: 'module' });
+}

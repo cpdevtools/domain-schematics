@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "CpdevtoolsStoreFeature",
+  "title": "Create a signalStoreFeature",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The feature, named for what it adds: cart-pricing (with-cart-pricing.ts).",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "What is the feature called?"
+    },
+    "domain": {
+      "type": "string",
+      "description": "The domain.",
+      "$default": { "$source": "argv", "index": 1 },
+      "x-prompt": "Which domain?"
+    },
+    "path": { "type": "string", "description": "The noun folder inside data/ (default: the name)." }
+  },
+  "required": ["name", "domain"]
+}

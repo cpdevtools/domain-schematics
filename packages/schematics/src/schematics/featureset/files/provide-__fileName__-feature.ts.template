@@ -1,0 +1,11 @@
+import type { Provider } from '@angular/core';
+import { ROUTES } from '@angular/router';
+import { <%= constantName %>_ROUTES } from './routes';
+
+/**
+ * <%= className %> in an app: its routes, nav entries and slot registrations. List it before
+ * `provideRouter`, so the routes come before the app's own.
+ */
+export function provide<%= className %>Feature(): Provider[] {
+  return [{ provide: ROUTES, multi: true, useValue: <%= constantName %>_ROUTES }];
+}

@@ -1,0 +1,47 @@
+import type { SheriffConfig } from '@softarc/sheriff-core';
+import {
+  domainModules,
+  domainRules,
+  featureSubModules,
+  layerRules,
+  rootRule,
+} from '@cpdevtools/schematics/sheriff';
+
+/**
+ * Module boundaries for the workspace (Sheriff): each domain package (<%= packages %>/<domain>/<layer>)
+ * follows the domain and layer rules; the apps' own files are Sheriff's root module. The schematics
+ * keep the four declarations below up to date.
+ */
+
+/** Each domain and the entry points it has (<%= packages %>/<domain>/<entry>/index.ts). */
+const domains: Record<string, readonly string[]> = {};
+
+/**
+ * Smart components loaded on their own (a routed page, a slot's component shown at startup), each a
+ * module of its own inside its domain's `feature`, so importing one does not bring in the rest.
+ */
+const featureModules: Record<string, readonly string[]> = {};
+
+/** Shared domains: any domain may use them; a shared domain uses another only through `uses`. */
+const shared: string[] = [];
+
+/** The domains each domain may use besides itself, the shared ones and simple libraries; one way only. */
+const uses: Record<string, readonly string[]> = {};
+
+export const config: SheriffConfig = {
+  entryPoints: {<% for (const [name, path] of Object.entries(entryPoints)) { %>
+    '<%= name %>': '<%= path %>',<% } %>
+  },
+  modules: {
+    ...domainModules(domains, '<%= packages %>'),
+    ...featureSubModules(featureModules, '<%= packages %>'),
+    '<%= libs %>/<lib>': ['type:lib'],
+  },
+  depRules: {
+    root: rootRule,
+    ...domainRules(domains, shared, uses),
+    ...layerRules(),
+    // While adopting: files Sheriff has no tag for may import each other and the root.
+    noTag: ['noTag', 'root'],
+  },
+};
