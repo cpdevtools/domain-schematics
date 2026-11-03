@@ -4,6 +4,9 @@
   "description": "Angular schematics for domain packages: one pnpm package per domain, layered, with Sheriff boundaries",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "domain-schematics": "./dist/bin.js"
+  },
   "scripts": {
     "build": "wireit",
     "format": "prettier --write \"src/**/*.ts\" \"tools/**/*.mjs\" \"*.{json,md}\" \"!src/**/files/**\"",

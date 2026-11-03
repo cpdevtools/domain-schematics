@@ -18,6 +18,7 @@ export const DEFAULT_VERSIONS: Readonly<Record<string, string>> = {
   'angular-eslint': '^22.0.0',
   eslint: '^9.18.0',
   jsdom: '^27.0.0',
+  'ng-packagr': '^22.1.0',
   prettier: '^3.4.2',
   rxjs: '^7.8.0',
   tslib: '^2.3.0',

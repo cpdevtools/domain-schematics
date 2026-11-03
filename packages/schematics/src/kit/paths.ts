@@ -80,6 +80,9 @@ export function syncSpecClosure(tree: Tree, ws: DomainPackagesConfig, pkg: Works
   const depth = self.dir.split('/').length;
   const up = '../'.repeat(depth);
   const paths: Record<string, string[]> = {};
+  // A publishable package imports its own layers by name: resolved to its sources here, so the
+  // test build compiles one copy of them (through node_modules it would load a second).
+  if (self.publishable) paths[`${self.name}/*`] = ['./*/index.ts'];
   for (const dep of closure.domains) {
     paths[`${dep.name}/*`] = [`${up}${dep.dir}/*/index.ts`];
   }

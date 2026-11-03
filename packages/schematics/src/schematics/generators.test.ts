@@ -107,9 +107,11 @@ describe('feature-component', () => {
     expect(tree.readText('sheriff.config.ts')).toContain("cart: ['cart/cart-nav-item']");
     const slotFile = tree.readText('packages/shell/ui/nav-item/nav-item.slot.ts');
     expect(slotFile).toContain(
-      'export const SHELL_NAV_ITEMS = new InjectionToken<readonly ShellNavItem[]>(',
+      'export const SHELL_NAV_ITEMS = new InjectionToken<readonly Type<unknown>[]>(',
     );
-    expect(slotFile).toContain('export function provideShellNavItem(item: ShellNavItem): Provider');
+    expect(slotFile).toContain(
+      'export function provideShellNavItem(component: Type<unknown>): Provider',
+    );
     expect(tree.readText('packages/shell/ui/index.ts')).toContain(
       "export * from './nav-item/nav-item.slot';",
     );

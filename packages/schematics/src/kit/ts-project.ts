@@ -7,6 +7,7 @@ import {
   Project,
   QuoteKind,
   type SourceFile,
+  SyntaxKind,
   ts,
 } from 'ts-morph';
 import { readJsonIfExists } from './json';
@@ -99,7 +100,8 @@ function barrelDir(tree: Tree, dir: string, stopAt: string | undefined): string 
 /**
  * The import specifier Sheriff expects from one file to another: a relative file path within one
  * module, the target module's folder (its barrel) between modules of one package, and the entry
- * point (`<scope><package>/<layer>`) between packages.
+ * point (`<scope><package>/<layer>`) between packages; in a publishable package, between two of its
+ * layers too (see below).
  */
 export function importSpecifier(files: WorkspaceFiles, fromPath: string, toPath: string): string {
   const from = cleanPath(fromPath);
@@ -111,6 +113,15 @@ export function importSpecifier(files: WorkspaceFiles, fromPath: string, toPath:
   if (samePackage || (!fromModule.package && !toModule.package)) {
     if (fromModule.dir === toModule.dir) return relativeFile(from, to);
     if (!toModule.package) return relativeFile(from, to);
+    // ng-packagr compiles each layer of a publishable package with its own rootDir, so between two
+    // of its layers only the entry point works.
+    if (
+      toModule.package.publishable &&
+      toModule.package.kind === 'domain' &&
+      (fromModule.entryPoint ?? fromModule.type) !== (toModule.entryPoint ?? toModule.type)
+    ) {
+      return entryPointSpecifier(files.tree, toModule, to);
+    }
     return relativeDir(from, toModule.dir);
   }
   if (!toModule.package) return relativeFile(from, to);
@@ -121,7 +132,14 @@ export function importSpecifier(files: WorkspaceFiles, fromPath: string, toPath:
 export function entryPointSpecifier(tree: Tree, toModule: ModuleInfo, toPath: string): string {
   const pkg = toModule.package!;
   if (toModule.type === 'main') return pkg.name;
-  if (toModule.entryPoint) return `${pkg.name}/${toModule.entryPoint}`;
+  if (toModule.entryPoint) {
+    // A feature sub-module that is a secondary entry point of its own (publishable packages).
+    const inside = toModule.dir.slice(pkg.dir.length + 1);
+    if (inside !== toModule.entryPoint && tree.exists(`${toModule.dir}/ng-package.json`)) {
+      return `${pkg.name}/${inside}`;
+    }
+    return `${pkg.name}/${toModule.entryPoint}`;
+  }
   // A library: the export whose target folder holds the file, else the main entry.
   const manifest = readJsonIfExists<PackageJson>(tree, `${pkg.dir}/package.json`);
   const inside = cleanPath(toPath).slice(pkg.dir.length + 1);
@@ -362,7 +380,22 @@ export function normalizeImports(
     const after = statements.join('\n');
     if (groups.size === 1 && groups.has(current) && squash(before) === squash(after)) continue;
     decl.replaceWithText(after);
-    changes.push({ file: fromPath, before, after: statements.join('\n') });
+    changes.push({ file: fromPath, before, after });
+  }
+  // Dynamic imports (`loadComponent: () => import('../feature/cart-page')`): only the specifier.
+  for (const call of file.getDescendantsOfKind(SyntaxKind.CallExpression)) {
+    if (call.getExpression().getKind() !== SyntaxKind.ImportKeyword) continue;
+    const arg = call.getArguments()[0];
+    if (!arg || !Node.isStringLiteral(arg)) continue;
+    const current = arg.getLiteralText();
+    if (!current.startsWith('.')) continue;
+    const resolved = resolveImport(tsws, fromPath, current);
+    if (!resolved) continue;
+    const specifier = importSpecifier(tsws, fromPath, resolved);
+    if (specifier === current) continue;
+    const before = call.getText();
+    arg.setLiteralValue(specifier);
+    changes.push({ file: fromPath, before, after: call.getText() });
   }
   return changes;
 }

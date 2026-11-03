@@ -7,16 +7,25 @@ import {
 } from '@angular-devkit/schematics';
 import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
 import {
+  cleanPath,
+  commitTsWorkspace,
   domainClosure,
+  ensureDependency,
   generateFiles,
+  loadTsWorkspace,
   names,
+  normalizeImports,
+  readSheriffConfig,
+  syncSpecClosure,
   updateJson,
   workspace,
   workspacePackages,
+  type DomainPackagesConfig,
   type PackageJson,
   type WorkspacePackage,
 } from '../../kit';
 import { entryPointsOf, format, templates } from '../common';
+import { workspaceVersions } from '../versions';
 
 export interface PublishableOptions {
   name: string;
@@ -39,7 +48,7 @@ export function publishable(options: PublishableOptions): Rule {
       );
       if (!pkg) throw new SchematicsException(`No domain or library "${options.name}".`);
       const registry = options.registry ?? firstNpmRegistry(tree);
-      if (pkg.kind === 'domain') makeDomainPublishable(tree, pkg, packages, registry);
+      if (pkg.kind === 'domain') makeDomainPublishable(tree, ws, pkg, packages, registry, context);
       else makeLibPublishable(tree, pkg, registry);
       updateJson<PackageJson>(tree, `${pkg.dir}/package.json`, (p) => {
         delete p.private;
@@ -57,9 +66,11 @@ export default publishable;
 
 function makeDomainPublishable(
   tree: Tree,
+  ws: DomainPackagesConfig,
   pkg: WorkspacePackage,
   packages: WorkspacePackage[],
   registry: string,
+  context: SchematicContext,
 ): void {
   const closure = domainClosure(packages, pkg);
   const up = '../'.repeat(pkg.dir.split('/').length);
@@ -69,17 +80,36 @@ function makeDomainPublishable(
     paths[`${dep.name}/*`] = `${up}${dep.dir}/dist/*`;
   }
   for (const dep of closure.others) paths[dep.name] = `${up}${dep.dir}/dist`;
+  const scopePattern = '^' + ws.scope.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
   generateFiles(
     tree,
     templates(__dirname, 'files-domain'),
     pkg.dir,
-    { up, paths },
+    { up, paths, scopePattern },
     { overwrite: true },
   );
+  ensureDependency(tree, pkg.dir, 'ng-packagr', workspaceVersions(tree, ws)('ng-packagr'), [
+    'devDependencies',
+  ]);
+
   for (const entryPoint of entryPointsOf(tree, pkg.dir)) {
     const file = `${pkg.dir}/${entryPoint}/ng-package.json`;
     if (!tree.exists(file))
       tree.create(file, '{\n  "lib": {\n    "entryFile": "index.ts"\n  }\n}\n');
+  }
+  // Each feature sub-module (a lazy page) is a secondary entry point of its own, so a consumer's
+  // route can still load just that page: `import('<name>/feature/<page>')`.
+  const subModules = readSheriffConfig(tree, ws).featureModules[pkg.shortName!] ?? [];
+  for (const sub of subModules) {
+    const dir = `${pkg.dir}/feature/${sub}`;
+    if (!tree.exists(`${dir}/index.ts`)) continue;
+    const file = `${dir}/ng-package.json`;
+    if (!tree.exists(file))
+      tree.create(file, '{\n  "lib": {\n    "entryFile": "index.ts"\n  }\n}\n');
+    updateJson<PackageJson>(tree, `${pkg.dir}/package.json`, (p) => {
+      p.exports ??= { '.': './index.ts' };
+      p.exports[`./feature/${sub}`] ??= `./feature/${sub}/index.ts`;
+    });
   }
   updateJson<{
     projects?: Record<
@@ -97,6 +127,23 @@ function makeDomainPublishable(
     p.scripts['github.actions.build'] ??= 'ng build';
     p.scripts['github.actions.pack'] ??= 'gitflow pack';
   });
+  // ng-packagr compiles each layer with its own rootDir: the layers import each other by name
+  // from here on, and the specs resolve that name to the sources.
+  const fresh = workspacePackages(tree, ws);
+  const self = fresh.find((p) => p.dir === pkg.dir)!;
+  syncSpecClosure(tree, ws, self);
+  const tsws = loadTsWorkspace({ tree, ws, packages: fresh });
+  let rewritten = 0;
+  for (const file of tsws.project.getSourceFiles()) {
+    if (!cleanPath(file.getFilePath()).startsWith(pkg.dir + '/')) continue;
+    rewritten += normalizeImports(tsws, file).length;
+  }
+  commitTsWorkspace(tsws);
+  if (rewritten > 0) {
+    context.logger.info(
+      `${pkg.name}: ${rewritten} import(s) between its layers now use the entry point (ng-packagr secondary entry points cannot import each other relatively).`,
+    );
+  }
   writeArtifacts(tree, pkg.dir, [
     {
       type: 'ng-lib',

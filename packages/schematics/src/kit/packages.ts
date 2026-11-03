@@ -29,6 +29,11 @@ export interface WorkspacePackage {
   readonly shortName?: string;
   /** For a domain: the entry points it has, read from `exports`. */
   readonly entryPoints: readonly EntryPoint[];
+  /**
+   * Built by ng-packagr for publishing (it has a `tsconfig.lib.json`): its layers are secondary
+   * entry points, which import each other by package name, never relatively.
+   */
+  readonly publishable: boolean;
   readonly packageJson: PackageJson;
 }
 
@@ -44,7 +49,7 @@ export function workspacePackages(tree: Tree, ws: DomainPackagesConfig): Workspa
     const packageJson = readJsonIfExists<PackageJson>(tree, manifest);
     if (!packageJson?.name) continue;
     const dir = manifest.slice(0, -'/package.json'.length);
-    packages.push(describe(ws, dir, packageJson));
+    packages.push(describe(ws, dir, packageJson, tree.exists(`${dir}/tsconfig.lib.json`)));
   }
   return packages.sort((a, b) => a.dir.localeCompare(b.dir));
 }
@@ -53,6 +58,7 @@ function describe(
   ws: DomainPackagesConfig,
   dir: string,
   packageJson: PackageJson,
+  publishable: boolean,
 ): WorkspacePackage {
   const name = packageJson.name!;
   const top = dir.split('/')[0];
@@ -70,6 +76,7 @@ function describe(
     shortName:
       kind === 'domain' || kind === 'lib' ? (shortName ?? dir.split('/').pop()) : undefined,
     entryPoints,
+    publishable,
     packageJson,
   };
 }

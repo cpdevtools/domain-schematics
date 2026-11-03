@@ -13,9 +13,10 @@ function walk(dir) {
     const path = join(dir, entry);
     const rel = relative(src, path);
     if (statSync(path).isDirectory()) {
-      if (entry === 'files') {
+      if (entry === 'files' || entry.startsWith('files-')) {
         cpSync(path, join(dist, rel), { recursive: true });
-      } else if (entry !== 'testing') {
+      } else if (rel !== 'testing') {
+        // src/testing holds the test helpers, which do not ship.
         walk(path);
       }
     } else if (entry.endsWith('.json')) {
