@@ -331,6 +331,16 @@ export interface NormalizeOptions {
   readonly movedSymbols?: ReadonlyMap<string, SourceFile>;
 }
 
+/**
+ * Whether the schematics rewrite a file's imports at all: not inside a package that has no layers
+ * yet (one still being converted, such as a legacy engine), whose insides they do not understand.
+ */
+export function isConverted(files: WorkspaceFiles, path: string): boolean {
+  const module = moduleOf(files, cleanPath(path));
+  if (module.type !== 'main') return true;
+  return cleanPath(path) === `${module.dir}/index.ts`;
+}
+
 export function normalizeImports(
   tsws: TsWorkspace,
   file: SourceFile,

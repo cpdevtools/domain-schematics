@@ -16,7 +16,12 @@
       "$default": { "$source": "argv", "index": 1 },
       "x-prompt": "Which domain?"
     },
-    "kind": { "type": "string", "enum": ["global", "component"], "default": "global", "description": "global (providedIn root) or component (provided by a smart component)." },
+    "kind": {
+      "type": "string",
+      "enum": ["global", "component"],
+      "default": "global",
+      "description": "global (providedIn root) or component (provided by a smart component)."
+    },
     "path": { "type": "string", "description": "The noun folder inside data/ (default: the name)." }
   },
   "required": ["name", "domain"]

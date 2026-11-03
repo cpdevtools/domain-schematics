@@ -30,24 +30,19 @@
     "eslint": "^9.18.0",
     "prettier": "^3.8.1",
     "rxjs": "^7.8.2",
-    "typescript": "~6.0.2",
+    "typescript": "^6.0.2",
     "typescript-eslint": "^8.69.0",
     "vitest": "^4.0.8"
   },
   "peerDependencies": {
-    "prettier": "^3.0.0"
-  },
-  "peerDependenciesMeta": {
-    "prettier": {
-      "optional": true
-    }
+    "prettier": "^3.8.1"
   },
   "keywords": [
     "angular",
-    "schematics",
     "domain-driven",
-    "sheriff",
-    "monorepo"
+    "monorepo",
+    "schematics",
+    "sheriff"
   ],
   "author": "CPDevTools",
   "license": "MIT",
@@ -60,10 +55,6 @@
   "homepage": "https://github.com/cpdevtools/domain-schematics#readme",
   "engines": {
     "node": ">=24"
-  },
-  "schematics": "./dist/collection.json",
-  "ng-update": {
-    "migrations": "./dist/migrations/migration.json"
   },
   "exports": {
     ".": {
@@ -83,6 +74,15 @@
   "files": [
     "dist"
   ],
+  "ng-update": {
+    "migrations": "./dist/migrations/migration.json"
+  },
+  "peerDependenciesMeta": {
+    "prettier": {
+      "optional": true
+    }
+  },
+  "schematics": "./dist/collection.json",
   "wireit": {
     "build": {
       "command": "tsc -p tsconfig.build.json && node tools/copy-assets.mjs",

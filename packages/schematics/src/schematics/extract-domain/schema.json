@@ -16,8 +16,16 @@
       "$default": { "$source": "argv", "index": 1 },
       "x-prompt": "Which folder moves into it?"
     },
-    "layer": { "type": "string", "default": "feature", "description": "The layer the folder's files land in." },
-    "layers": { "type": "string", "default": "provide,feature,ui,data,model", "description": "The layers the domain starts with." },
+    "layer": {
+      "type": "string",
+      "default": "feature",
+      "description": "The layer the folder's files land in."
+    },
+    "layers": {
+      "type": "string",
+      "default": "provide,feature,ui,data,model",
+      "description": "The layers the domain starts with."
+    },
     "deps": { "type": "string", "default": "", "description": "The business domains it uses." },
     "shared": { "type": "boolean", "default": false, "description": "A shared domain." }
   },

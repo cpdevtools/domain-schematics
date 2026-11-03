@@ -11,6 +11,7 @@ import {
   checkBoundaries,
   cleanPath,
   commitTsWorkspace,
+  isConverted,
   isSourceFile,
   loadTsWorkspace,
   moduleOf,
@@ -209,6 +210,7 @@ export function performMove(tree: Tree, plan: MovePlan): MoveReport {
   // Every import in the workspace to the specifier Sheriff expects; only what differs is touched.
   const rewrites: ImportRewrite[] = [];
   for (const sf of tsws.project.getSourceFiles()) {
+    if (!isConverted(tsws, sf.getFilePath())) continue;
     const changes = normalizeImports(tsws, sf, { movedSymbols });
     if (changes.length > 0) {
       rewrites.push(...changes);
@@ -218,8 +220,9 @@ export function performMove(tree: Tree, plan: MovePlan): MoveReport {
 
   const violations: BoundaryViolation[] = [];
   for (const sf of affected) {
-    if (tsws.project.getSourceFile(sf.getFilePath()))
+    if (tsws.project.getSourceFile(sf.getFilePath()) && isConverted(tsws, sf.getFilePath())) {
       violations.push(...checkBoundaries(tsws, rules, sf));
+    }
   }
 
   commitTsWorkspace(tsws);

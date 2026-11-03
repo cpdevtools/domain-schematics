@@ -17,7 +17,11 @@
       "x-prompt": "Which domain declares it?"
     },
     "path": { "type": "string", "description": "The noun folder inside ui/ (default: the name)." },
-    "lazy": { "type": "boolean", "default": false, "description": "Takes a loader (() => import(...)) instead of a value." }
+    "lazy": {
+      "type": "boolean",
+      "default": false,
+      "description": "Takes a loader (() => import(...)) instead of a value."
+    }
   },
   "required": ["name", "domain"]
 }

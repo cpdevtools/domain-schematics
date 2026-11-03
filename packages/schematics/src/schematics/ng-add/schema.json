@@ -13,8 +13,20 @@
       "description": "The selector prefix of the workspace's components. Inferred from an app's angular.json when omitted."
     },
     "apps": { "type": "string", "default": "apps", "description": "The folder holding the apps." },
-    "packages": { "type": "string", "default": "packages", "description": "The folder holding the domain packages." },
-    "libs": { "type": "string", "default": "libs", "description": "The folder holding the simple libraries." },
-    "skipInstall": { "type": "boolean", "default": false, "description": "Do not run the package manager after adding Sheriff." }
+    "packages": {
+      "type": "string",
+      "default": "packages",
+      "description": "The folder holding the domain packages."
+    },
+    "libs": {
+      "type": "string",
+      "default": "libs",
+      "description": "The folder holding the simple libraries."
+    },
+    "skipInstall": {
+      "type": "boolean",
+      "default": false,
+      "description": "Do not run the package manager after adding Sheriff."
+    }
   }
 }
