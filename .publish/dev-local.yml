@@ -1,0 +1,4 @@
+# dev-link map: `devutil dev-link` repoints the installed toolchain packages at these local
+# checkouts (DEV_LOCAL=true only, never under CI). See dev-local.yml.example.
+packages:
+  '@cpdevtools/ts-dev-utilities': ../ts-dev-utilities/packages/ts-dev-utilities

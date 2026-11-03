@@ -1,0 +1,8 @@
+# Registries used when publishing release artifacts.
+# Referenced by each package's release-artifacts.yml (registries: [...]).
+registries:
+  github-npm:
+    type: npm
+    url: https://npm.pkg.github.com
+    auth: GITHUB_TOKEN
+    scope: '@cpdevtools'
