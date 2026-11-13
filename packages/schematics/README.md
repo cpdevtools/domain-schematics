@@ -22,14 +22,14 @@ that already has a root `angular.json`, `ng add @cpdevtools/schematics` does the
 
 What `init` writes:
 
-| Where                          | What                                                                                                    |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| `package.json` `domainPackages` | `scope` (what every package name starts with, `@scope/` or `@scope/product-`), `prefix`, the folders    |
-| `package.json` scripts          | `generate.<schematic>` for every generator, `check.boundaries` (`sheriff verify <entry points>`)        |
-| `angular.json`                  | The root workspace file with the collection registered                                                  |
-| `sheriff.config.ts`             | The modules and rules of the structure, from `domains`, `featureModules`, `shared` and `uses`           |
-| `tools/eslint-sheriff.mjs`      | Sheriff's rules as an ESLint fragment every package config spreads in                                   |
-| `.vscode/settings.json`         | Auto-imports use entry points; the workspace TypeScript is the one loaded                               |
+| Where                           | What                                                                                                 |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `package.json` `domainPackages` | `scope` (what every package name starts with, `@scope/` or `@scope/product-`), `prefix`, the folders |
+| `package.json` scripts          | `generate.<schematic>` for every generator, `check.boundaries` (`sheriff verify <entry points>`)     |
+| `angular.json`                  | The root workspace file with the collection registered                                               |
+| `sheriff.config.ts`             | The modules and rules of the structure, from `domains`, `featureModules`, `shared` and `uses`        |
+| `tools/eslint-sheriff.mjs`      | Sheriff's rules as an ESLint fragment every package config spreads in                                |
+| `.vscode/settings.json`         | Auto-imports use entry points; the workspace TypeScript is the one loaded                            |
 
 The `ng` that runs at the root must be Angular CLI **22.2 or later**: 22.1 sorts positional options
 by index and treats index 0 as unset, so `ng g feature-component <name> <domain>` hands the first
@@ -47,23 +47,28 @@ Every schematic adds what it creates to the layer's `index.ts`, refuses a placem
 forbid (a cycle in `uses`, a shared domain using a business one, a name that is not a layer), works
 with `--dry-run`, and formats only the files it touched with the workspace's prettier.
 
-| Schematic                                   | Creates or changes                                                                                                                                                                                              |
-| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `domain <name> [--layers] [--deps] [--shared]` | A domain package: `package.json` with an `exports` entry per layer, main `index.ts` with `VERSION`, tsconfig and spec tsconfig, `angular.json` (ng-packagr build and unit-test targets), ESLint config, the root `paths`, every app's dependency, spec `paths` and `prebundle.exclude`, Sheriff's `domains` (and `shared`, `uses`) |
-| `library <name>`                            | A simple library in `libs/<name>/`: `package.json`, `index.ts`, tsconfig, ESLint config, the root `paths`, the apps' wiring                                                                                      |
-| `layer <domain> <layer>`                    | A layer in an existing domain: folder, `index.ts`, its `exports` entry and Sheriff line                                                                                                                         |
-| `testing <domain>`                          | The domain's `testing` entry point for test doubles, which only `*.spec.ts` files may import                                                                                                                   |
-| `featureset <domain>`                       | `provide-<domain>-feature.ts` and `routes.ts` in `provide`, and `provide<Domain>Feature()` listed in each app's `app.config.ts` before `provideRouter`                                                         |
-| `feature-component <name> <domain>`         | A smart component in `feature/[<path>/]<name>/` with a spec; `--store` adds a component store; `--routed` makes it a sub-module with a lazy route in `routes.ts`; `--slot <provideX> [--slot-domain <d>]` makes it a sub-module registered in the featureset |
-| `ui-component <name> <domain>`              | A presentational component in `ui/[<path>/]<name>/` with a spec; `--presenter` adds `<name>.presenter.ts`                                                                                                       |
-| `store <name> <domain>`                     | A `signalStore` in `data/<noun>/<name>.store.ts`: `--kind global` (default, `providedIn: 'root'`) or `component`                                                                                                 |
-| `store-feature <name> <domain>`             | `with-<name>.ts` in `data/<noun>/`                                                                                                                                                                              |
-| `slot <name> <domain>`                      | A multi-provider token and `provide<Domain><Name>()` in `ui/<noun>/<name>.slot.ts`, taking a component; `--lazy` takes a loader (`() => import(...)`)                                                           |
-| `worker <name> <domain>`                    | `<name>.worker.ts` and `start<Name>Worker()` in `data/<noun>/`, `tsconfig.worker.json`, the worker glob excluded from the package tsconfig, the typecheck step, Sheriff's entry point and `check.boundaries`     |
-| `uses <domain> <uses>`                      | Adds a domain to another's `uses` line after checking it makes no cycle; the dependency, and the spec `paths` of every domain whose closure grew                                                                |
-| `move <from> <to> [--symbol <name>] [--manifest <json>]` | Moves files, a folder, or an exported symbol, and rewrites every import (below)                                                                                                                    |
-| `extract-domain <name> <folder> [--layer]`  | `domain` plus `move`: an app folder lands in one layer, exported from its barrel                                                                                                                                |
-| `publishable <name>`                        | Makes a domain or library publishable through git-flow (below)                                                                                                                                                  |
+| Schematic                                                | Creates or changes                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `domain <name> --layers <l,…> [--deps] [--shared]`       | A domain package with exactly the layers named (asked for interactively when omitted; refused without a terminal): `package.json` with an `exports` entry per layer, main `index.ts` with `VERSION`, tsconfig and spec tsconfig, `angular.json` (ng-packagr build and unit-test targets), ESLint config, the root `paths`, every app's dependency, spec `paths` and `prebundle.exclude`, Sheriff's `domains` (and `shared`, `uses`) |
+| `library <name>`                                         | A simple library in `libs/<name>/`: `package.json`, `index.ts`, tsconfig, ESLint config, the root `paths`, the apps' wiring                                                                                                                                                                                                                                                                                                         |
+| `layer <domain> <layer>`                                 | A layer in an existing domain: folder, `index.ts`, its `exports` entry and Sheriff line                                                                                                                                                                                                                                                                                                                                             |
+| `testing <domain>`                                       | The domain's `testing` entry point for test doubles, which only `*.spec.ts` files may import                                                                                                                                                                                                                                                                                                                                        |
+| `featureset <domain>`                                    | `provide-<domain>-feature.ts` and `routes.ts` in `provide`, and `provide<Domain>Feature()` listed in each app's `app.config.ts` before `provideRouter`                                                                                                                                                                                                                                                                              |
+| `feature-component <name> <domain>`                      | A smart component in `feature/[<path>/]<name>/` with a spec; `--store` adds a component store; `--routed` makes it a sub-module with a lazy route in `routes.ts`; `--slot <provideX> [--slot-domain <d>]` makes it a sub-module registered in the featureset                                                                                                                                                                        |
+| `ui-component <name> <domain>`                           | A presentational component in `ui/[<path>/]<name>/` with a spec; `--presenter` adds `<name>.presenter.ts`                                                                                                                                                                                                                                                                                                                           |
+| `store <name> <domain>`                                  | A `signalStore` in `data/<noun>/<name>.store.ts`: `--kind global` (default, `providedIn: 'root'`) or `component`                                                                                                                                                                                                                                                                                                                    |
+| `store-feature <name> <domain>`                          | `with-<name>.ts` in `data/<noun>/`                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `slot <name> <domain>`                                   | A multi-provider token and `provide<Domain><Name>()` in `ui/<noun>/<name>.slot.ts`, taking a component; `--lazy` takes a loader (`() => import(...)`)                                                                                                                                                                                                                                                                               |
+| `worker <name> <domain>`                                 | `<name>.worker.ts` and `start<Name>Worker()` in `data/<noun>/`, `tsconfig.worker.json`, the worker glob excluded from the package tsconfig, the typecheck step, Sheriff's entry point and `check.boundaries`                                                                                                                                                                                                                        |
+| `uses <domain> <uses>`                                   | Adds a domain to another's `uses` line after checking it makes no cycle; the dependency, and the spec `paths` of every domain whose closure grew                                                                                                                                                                                                                                                                                    |
+| `move <from> <to> [--symbol <name>] [--manifest <json>]` | Moves files, a folder, or an exported symbol, and rewrites every import (below)                                                                                                                                                                                                                                                                                                                                                     |
+| `extract-domain <name> <folder> [--layer]`               | `domain` plus `move`: an app folder lands in one layer, exported from its barrel                                                                                                                                                                                                                                                                                                                                                    |
+| `publishable <name>`                                     | Makes a domain or library publishable through git-flow (below)                                                                                                                                                                                                                                                                                                                                                                      |
+
+No layer is ever created silently. `domain` makes exactly the layers it is told; a generator that
+needs a layer the domain does not have asks before adding it, and without a terminal to ask on it
+refuses and names the command (`ng g layer cart data`). `extract-domain` creates the target layer
+and whatever `--layers` names.
 
 The first spec a package gets adds its `test` and `github.actions.test` scripts: `ng test` fails
 when it finds no spec, and the workspace runner skips a package without a `test` script.
@@ -76,7 +81,13 @@ for many at once:
 ```json
 {
   "files": { "apps/web/src/app/pages/replay": "packages/replays/feature/replay-page" },
-  "symbols": [{ "name": "ReplaySummary", "from": "packages/replays/data/replay.service.ts", "to": "packages/replays/model/replay-summary.ts" }]
+  "symbols": [
+    {
+      "name": "ReplaySummary",
+      "from": "packages/replays/data/replay.service.ts",
+      "to": "packages/replays/model/replay-summary.ts"
+    }
+  ]
 }
 ```
 
@@ -108,7 +119,7 @@ Inside the workspace a domain package is never built on its own: the apps compil
   its built `dist/`.
 - `github.actions.build` (`ng build`), `github.actions.pack` (`gitflow pack`), `ng-packagr` as a dev
   dependency, and a `release-artifacts.yml` with an `ng-lib` artifact (`directory: .`, `packDir:
-  dist`) for the first npm registry in `.publish/registries.yml`. A library gets a `tsc` build and
+dist`) for the first npm registry in `.publish/registries.yml`. A library gets a `tsc` build and
   an `npm` artifact instead.
 
 **One rule changes for a publishable package.** ng-packagr compiles each entry point with its own
@@ -132,19 +143,19 @@ settings; it leaves an existing `sheriff.config.ts` and `tools/eslint-sheriff.mj
 `@cpdevtools/schematics/kit` is what the schematics are written with, in the shape of Nx's devkit
 over `@angular-devkit/schematics`, for a workspace's own schematics:
 
-| Function                                                        | What it does                                                                                             |
-| --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `names(name, prefix?)`                                          | Kebab, Pascal, camel and constant forms, and the selector                                                |
-| `workspace(tree)`                                               | The `domainPackages` config: scope, prefix, folders                                                      |
-| `workspacePackages(tree, ws)`, `domainClosure(packages, pkg)`   | The member packages (from `pnpm-workspace.yaml`), and a package's dependencies and theirs                |
-| `generateFiles(tree, templatesDir, target, vars)`               | Copies a template folder with substitutions (`__name__` in paths, `<%= %>` in content)                   |
-| `readJson`, `updateJson(tree, path, fn)`, `writeJson`           | JSON and JSONC; `updateJson` keeps comments, key order and formatting                                     |
-| `addExport(tree, indexFile, specifier)`                         | Adds a sorted `export * from` line                                                                       |
-| `addPackageEntryPoint`, `addRootTsconfigPaths`, `syncSpecClosure`, `wireApps` | The `exports` entry, the root `paths`, the spec `paths` and dev dependencies of the closure, the apps' wiring |
-| `editSheriffConfig(tree, ws, (c) => …)`                         | `setDomain`, `addDomainEntryPoint`, `addFeatureModule`, `addShared`, `addUses`, `setEntryPoint`, through the TypeScript AST |
-| `formatFiles(tree)`                                             | The workspace's prettier over the files the run changed                                                  |
-| `layerMayImport`, `domainMayUse`, `usesCycle`, `assertUsesAllowed` | The layer and domain rules                                                                            |
-| `loadTsWorkspace`, `moduleOf`, `importSpecifier`, `normalizeImports`, `checkBoundaries`, `barrelExports`, `resolveImport` | The ts-morph side `move` is built on |
+| Function                                                                                                                  | What it does                                                                                                                |
+| ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `names(name, prefix?)`                                                                                                    | Kebab, Pascal, camel and constant forms, and the selector                                                                   |
+| `workspace(tree)`                                                                                                         | The `domainPackages` config: scope, prefix, folders                                                                         |
+| `workspacePackages(tree, ws)`, `domainClosure(packages, pkg)`                                                             | The member packages (from `pnpm-workspace.yaml`), and a package's dependencies and theirs                                   |
+| `generateFiles(tree, templatesDir, target, vars)`                                                                         | Copies a template folder with substitutions (`__name__` in paths, `<%= %>` in content)                                      |
+| `readJson`, `updateJson(tree, path, fn)`, `writeJson`                                                                     | JSON and JSONC; `updateJson` keeps comments, key order and formatting                                                       |
+| `addExport(tree, indexFile, specifier)`                                                                                   | Adds a sorted `export * from` line                                                                                          |
+| `addPackageEntryPoint`, `addRootTsconfigPaths`, `syncSpecClosure`, `wireApps`                                             | The `exports` entry, the root `paths`, the spec `paths` and dev dependencies of the closure, the apps' wiring               |
+| `editSheriffConfig(tree, ws, (c) => …)`                                                                                   | `setDomain`, `addDomainEntryPoint`, `addFeatureModule`, `addShared`, `addUses`, `setEntryPoint`, through the TypeScript AST |
+| `formatFiles(tree)`                                                                                                       | The workspace's prettier over the files the run changed                                                                     |
+| `layerMayImport`, `domainMayUse`, `usesCycle`, `assertUsesAllowed`                                                        | The layer and domain rules                                                                                                  |
+| `loadTsWorkspace`, `moduleOf`, `importSpecifier`, `normalizeImports`, `checkBoundaries`, `barrelExports`, `resolveImport` | The ts-morph side `move` is built on                                                                                        |
 
 The kit builds on [ts-dev-utilities](https://github.com/cpdevtools/ts-dev-utilities) for JSON editing
 (`updateJsonText`) and the workspace patterns (`parseWorkspacePatterns`), and carries its own
@@ -155,17 +166,34 @@ TypeScript through ts-morph, independent of the workspace's version.
 `@cpdevtools/schematics/sheriff` is what the generated `sheriff.config.ts` imports:
 
 ```ts
-import { domainModules, domainRules, featureSubModules, layerRules, rootRule } from '@cpdevtools/schematics/sheriff';
+import {
+  domainModules,
+  domainRules,
+  featureSubModules,
+  layerRules,
+  rootRule,
+} from '@cpdevtools/schematics/sheriff';
 
-const domains: Record<string, readonly string[]> = { cart: ['provide', 'feature', 'ui', 'data', 'model'] };
+const domains: Record<string, readonly string[]> = {
+  cart: ['provide', 'feature', 'ui', 'data', 'model'],
+};
 const featureModules: Record<string, readonly string[]> = { cart: ['cart-page'] };
 const shared: string[] = ['common'];
 const uses: Record<string, readonly string[]> = { cart: ['products'] };
 
 export const config: SheriffConfig = {
   entryPoints: { web: 'apps/web/src/main.ts' },
-  modules: { ...domainModules(domains), ...featureSubModules(featureModules), 'libs/<lib>': ['type:lib'] },
-  depRules: { root: rootRule, ...domainRules(domains, shared, uses), ...layerRules(), noTag: ['noTag', 'root'] },
+  modules: {
+    ...domainModules(domains),
+    ...featureSubModules(featureModules),
+    'libs/<lib>': ['type:lib'],
+  },
+  depRules: {
+    root: rootRule,
+    ...domainRules(domains, shared, uses),
+    ...layerRules(),
+    noTag: ['noTag', 'root'],
+  },
 };
 ```
 

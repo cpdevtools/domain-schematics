@@ -7,6 +7,7 @@ import {
   domainPackage,
   editSheriffConfig,
   ENTRY_POINTS,
+  LAYERS,
   generateFiles,
   isEntryPoint,
   names,
@@ -29,9 +30,13 @@ export interface DomainOptions {
   description?: string;
 }
 
+/** A comma-separated option, or an array of them (the CLI hands `--layers ui,model` over either way). */
 export function list(value: string | string[] | undefined): string[] {
-  const items = Array.isArray(value) ? value : (value ?? '').split(',');
-  return items.map((s) => s.trim()).filter((s) => s !== '');
+  const items = Array.isArray(value) ? value : [value ?? ''];
+  return items
+    .flatMap((item) => item.split(','))
+    .map((s) => s.trim())
+    .filter((s) => s !== '');
 }
 
 export function assertKebab(name: string, what: string): void {
@@ -68,7 +73,12 @@ export function createDomain(
   if (tree.getDir(dir).subfiles.length > 0)
     throw new SchematicsException(`${dir}/ already has files.`);
 
-  const layers = list(options.layers ?? [...ENTRY_POINTS.filter((e) => e !== 'testing')]);
+  const layers = list(options.layers);
+  if (layers.length === 0) {
+    throw new SchematicsException(
+      `Name the layers "${name}" starts with: --layers ui,model (any of ${LAYERS.join(', ')}). A layer is added later with \`ng g layer ${name} <layer>\`.`,
+    );
+  }
   for (const layer of layers) {
     if (!isEntryPoint(layer))
       throw new SchematicsException(`"${layer}" is not a layer (${ENTRY_POINTS.join(', ')}).`);

@@ -19,9 +19,9 @@ export interface UiComponentOptions {
 
 export function uiComponent(options: UiComponentOptions): Rule {
   return chain([
-    (tree: Tree) => {
+    async (tree: Tree) => {
       const ctx = domainContext(tree, options.domain);
-      const layerDir = ensureEntryPoint(tree, ctx, 'ui');
+      const layerDir = await ensureEntryPoint(tree, ctx, 'ui');
       const n = names(options.name, ctx.ws.prefix);
       const sub = subPath(options.path, n.fileName);
       const dir = `${layerDir}/${sub}`;

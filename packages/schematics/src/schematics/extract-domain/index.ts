@@ -26,7 +26,7 @@ export function extractDomain(options: ExtractDomainOptions): Rule {
     (tree: Tree, context: SchematicContext) => {
       const layer = options.layer ?? 'feature';
       if (!isEntryPoint(layer)) throw new SchematicsException(`"${layer}" is not a layer.`);
-      const layers = new Set(list(options.layers ?? 'provide,feature,ui,data,model'));
+      const layers = new Set(list(options.layers));
       layers.add(layer);
       const from = cleanPath(options.from);
       const { dir } = createDomain(tree, { ...options, layers: [...layers] });

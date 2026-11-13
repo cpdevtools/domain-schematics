@@ -12,7 +12,10 @@ describe('publishable', () => {
       'registries:\n  github-npm:\n    type: npm\n    url: https://npm.pkg.github.com\n',
     );
     tree = await run(domain({ name: 'common', layers: 'ui,model', shared: true }), tree);
-    tree = await run(domain({ name: 'cart', deps: 'common' }), tree);
+    tree = await run(
+      domain({ name: 'cart', layers: 'provide,feature,ui,data,model', deps: 'common' }),
+      tree,
+    );
     tree.create(
       'packages/cart/model/cart.ts',
       'export interface Cart {\n  readonly id: string;\n}\n',
@@ -67,7 +70,7 @@ describe('publishable', () => {
 
   it('a lazy page becomes its own secondary entry point, so the route still loads only the page', async () => {
     let tree = await fakeWorkspace();
-    tree = await run(domain({ name: 'cart' }), tree);
+    tree = await run(domain({ name: 'cart', layers: 'provide,feature,ui,data,model' }), tree);
     tree = await run(featureComponent({ name: 'cart-page', domain: 'cart', routed: true }), tree);
     tree = await run(publishable({ name: 'cart' }), tree);
     expect(tree.exists('packages/cart/feature/cart-page/ng-package.json')).toBe(true);

@@ -4,7 +4,10 @@ import { fakeWorkspace, filesUnder, readJsonFile, run } from '../../testing/work
 
 describe('domain', () => {
   it('writes the package, wires the app, the root paths and Sheriff', async () => {
-    const tree = await run(domain({ name: 'cart' }), await fakeWorkspace());
+    const tree = await run(
+      domain({ name: 'cart', layers: 'provide,feature,ui,data,model' }),
+      await fakeWorkspace(),
+    );
     expect(filesUnder(tree, 'packages/cart')).toEqual([
       'packages/cart/angular.json',
       'packages/cart/data/index.ts',
@@ -54,8 +57,14 @@ describe('domain', () => {
   it('declares uses, shared, and the spec paths of the closure', async () => {
     let tree = await fakeWorkspace();
     tree = await run(domain({ name: 'common', layers: 'ui,model', shared: true }), tree);
-    tree = await run(domain({ name: 'products', deps: 'common' }), tree);
-    tree = await run(domain({ name: 'cart', deps: 'products' }), tree);
+    tree = await run(
+      domain({ name: 'products', layers: 'provide,feature,ui,data,model', deps: 'common' }),
+      tree,
+    );
+    tree = await run(
+      domain({ name: 'cart', layers: 'provide,feature,ui,data,model', deps: 'products' }),
+      tree,
+    );
     const sheriff = tree.readText('sheriff.config.ts');
     expect(sheriff).toContain("const shared: string[] = ['common'];");
     expect(sheriff).toContain("cart: ['products']");
@@ -70,13 +79,41 @@ describe('domain', () => {
     });
   });
 
+  it('creates no layers it was not told about, and refuses without any', async () => {
+    let tree = await fakeWorkspace();
+    await expect(run(domain({ name: 'cart' }), tree)).rejects.toThrow(/Name the layers/);
+    tree = await run(domain({ name: 'cart', layers: 'ui,model' }), tree);
+    expect(filesUnder(tree, 'packages/cart').filter((f) => f.endsWith('/index.ts'))).toEqual([
+      'packages/cart/index.ts',
+      'packages/cart/model/index.ts',
+      'packages/cart/ui/index.ts',
+    ]);
+    expect(readJsonFile(tree, 'packages/cart/package.json').exports).toEqual({
+      '.': './index.ts',
+      './ui': './ui/index.ts',
+      './model': './model/index.ts',
+    });
+    expect(tree.readText('sheriff.config.ts')).toContain("cart: ['ui', 'model']");
+  });
+
   it('refuses a cycle and a shared domain using a business one', async () => {
     let tree = await fakeWorkspace();
-    tree = await run(domain({ name: 'products' }), tree);
-    tree = await run(domain({ name: 'cart', deps: 'products' }), tree);
-    await expect(run(domain({ name: 'shell', shared: true, deps: 'cart' }), tree)).rejects.toThrow(
-      /shared domain/,
+    tree = await run(domain({ name: 'products', layers: 'provide,feature,ui,data,model' }), tree);
+    tree = await run(
+      domain({ name: 'cart', layers: 'provide,feature,ui,data,model', deps: 'products' }),
+      tree,
     );
+    await expect(
+      run(
+        domain({
+          name: 'shell',
+          layers: 'provide,feature,ui,data,model',
+          shared: true,
+          deps: 'cart',
+        }),
+        tree,
+      ),
+    ).rejects.toThrow(/shared domain/);
     await expect(run(uses({ domain: 'products', uses: 'cart' }), tree)).rejects.toThrow(/cycle/);
   });
 });
