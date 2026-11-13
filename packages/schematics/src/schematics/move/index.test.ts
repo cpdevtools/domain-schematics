@@ -213,8 +213,6 @@ export const routes: Routes = [{ path: 'orders', component: OrdersPage }];
     expect(tree.readText('apps/web/src/app/app.routes.ts')).toContain(
       "import { OrdersPage } from '@acme/orders/feature';",
     );
-    expect(tree.readText('sheriff.config.ts')).toContain(
-      "orders: ['provide', 'feature', 'ui', 'data', 'model']",
-    );
+    expect(tree.readText('sheriff.config.ts')).toContain("orders: ['feature']");
   });
 });

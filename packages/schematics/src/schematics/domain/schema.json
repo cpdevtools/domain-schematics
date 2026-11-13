@@ -12,7 +12,7 @@
     },
     "layers": {
       "type": "array",
-      "items": { "type": "string", "enum": ["provide", "feature", "ui", "data", "model"] },
+      "items": { "type": "string" },
       "description": "The layers it starts with (--layers ui,model). Required when there is no terminal to ask on.",
       "x-prompt": {
         "message": "Which layers does the domain start with?",
