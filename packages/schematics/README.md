@@ -31,6 +31,11 @@ What `init` writes:
 | `tools/eslint-sheriff.mjs`      | Sheriff's rules as an ESLint fragment every package config spreads in                                   |
 | `.vscode/settings.json`         | Auto-imports use entry points; the workspace TypeScript is the one loaded                               |
 
+The `ng` that runs at the root must be Angular CLI **22.2 or later**: 22.1 sorts positional options
+by index and treats index 0 as unset, so `ng g feature-component <name> <domain>` hands the first
+argument to `domain`. Add `@angular/cli` to the root `devDependencies` if a dependency hoists an
+older one. On an older CLI, pass the options by name (`--name`, `--domain`).
+
 The scope is inferred from the names the existing packages share (`@myrddraall/heroes-replay-stats-`
 for a workspace whose packages are `…-common`, `…-shell`), else from the root package name. The
 prefix comes from an app's `angular.json`. Every app and package `tsconfig.json` must extend the root
