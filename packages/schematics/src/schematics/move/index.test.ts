@@ -7,8 +7,11 @@ import { fakeWorkspace, run } from '../../testing/workspace';
 /** cart: data holds a service and a type the ui needs; feature uses both; products uses cart's model. */
 async function layered(): Promise<Tree> {
   let tree = await fakeWorkspace();
-  tree = await run(domain({ name: 'cart' }), tree);
-  tree = await run(domain({ name: 'products', deps: 'cart' }), tree);
+  tree = await run(domain({ name: 'cart', layers: 'provide,feature,ui,data,model' }), tree);
+  tree = await run(
+    domain({ name: 'products', layers: 'provide,feature,ui,data,model', deps: 'cart' }),
+    tree,
+  );
   tree.create(
     'packages/cart/data/replay/replay.service.ts',
     `import { Injectable } from '@angular/core';
@@ -210,8 +213,6 @@ export const routes: Routes = [{ path: 'orders', component: OrdersPage }];
     expect(tree.readText('apps/web/src/app/app.routes.ts')).toContain(
       "import { OrdersPage } from '@acme/orders/feature';",
     );
-    expect(tree.readText('sheriff.config.ts')).toContain(
-      "orders: ['provide', 'feature', 'ui', 'data', 'model']",
-    );
+    expect(tree.readText('sheriff.config.ts')).toContain("orders: ['feature']");
   });
 });

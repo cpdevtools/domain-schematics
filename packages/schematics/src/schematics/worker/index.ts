@@ -20,9 +20,9 @@ const WORKER_TYPECHECK = 'tsc --noEmit -p tsconfig.worker.json';
 
 export function worker(options: WorkerOptions): Rule {
   return chain([
-    (tree: Tree) => {
+    async (tree: Tree) => {
       const ctx = domainContext(tree, options.domain);
-      const layerDir = ensureEntryPoint(tree, ctx, 'data');
+      const layerDir = await ensureEntryPoint(tree, ctx, 'data');
       const n = names(options.name);
       const noun = (options.path ?? n.fileName).replace(/^\/+|\/+$/g, '');
       const dir = `${layerDir}/${noun}`;
