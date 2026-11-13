@@ -20,9 +20,9 @@ export interface FeaturesetOptions {
 /** `provide-<domain>-feature.ts` and `routes.ts` in `provide`, and the call in each app's config. */
 export function featureset(options: FeaturesetOptions): Rule {
   return chain([
-    (tree: Tree, context: SchematicContext) => {
+    async (tree: Tree, context: SchematicContext) => {
       const ctx = domainContext(tree, options.domain);
-      createFeatureset(tree, ctx);
+      await createFeatureset(tree, ctx);
       if (!options.skipApps) listInApps(tree, ctx, context);
     },
     format(),
@@ -32,11 +32,11 @@ export function featureset(options: FeaturesetOptions): Rule {
 export default featureset;
 
 /** Writes the featureset files if the domain has none yet. Returns the routes file. */
-export function createFeatureset(
+export async function createFeatureset(
   tree: Tree,
   ctx: DomainContext,
-): { routes: string; provide: string } {
-  const dir = ensureEntryPoint(tree, ctx, 'provide');
+): Promise<{ routes: string; provide: string }> {
+  const dir = await ensureEntryPoint(tree, ctx, 'provide');
   const n = names(ctx.domain);
   const provide = `${dir}/provide-${n.fileName}-feature.ts`;
   const routes = `${dir}/routes.ts`;

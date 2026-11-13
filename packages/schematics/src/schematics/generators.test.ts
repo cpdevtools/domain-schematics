@@ -14,12 +14,13 @@ import { fakeWorkspace, filesUnder, readJsonFile, run } from '../testing/workspa
 async function cartWorkspace(): Promise<Tree> {
   let tree = await fakeWorkspace();
   tree = await run(domain({ name: 'shell', shared: true, layers: 'feature,ui' }), tree);
-  return run(domain({ name: 'cart', layers: 'ui,data,model' }), tree);
+  return run(domain({ name: 'cart', layers: 'provide,feature,ui,data,model' }), tree);
 }
 
 describe('layer and testing', () => {
   it('add the folder, the export entry and the Sheriff line', async () => {
-    let tree = await cartWorkspace();
+    let tree = await fakeWorkspace();
+    tree = await run(domain({ name: 'cart', layers: 'ui,data,model' }), tree);
     tree = await run(layer({ domain: 'cart', name: 'provide' }), tree);
     tree = await run(testing({ domain: 'cart' }), tree);
     expect(tree.readText('packages/cart/provide/index.ts')).toBe('export {};\n');
@@ -33,6 +34,20 @@ describe('layer and testing', () => {
     await expect(run(layer({ domain: 'nope', name: 'ui' }), tree)).rejects.toThrow(
       /No domain "nope"/,
     );
+  });
+});
+
+describe('a missing layer', () => {
+  it('is never created silently: without a terminal the generator refuses and names the command', async () => {
+    let tree = await fakeWorkspace();
+    tree = await run(domain({ name: 'cart', layers: 'ui,model' }), tree);
+    await expect(run(store({ name: 'carts', domain: 'cart' }), tree)).rejects.toThrow(
+      /no data layer.*ng g layer cart data/,
+    );
+    await expect(
+      run(featureComponent({ name: 'cart-page', domain: 'cart' }), tree),
+    ).rejects.toThrow(/no feature layer/);
+    expect(tree.exists('packages/cart/data')).toBe(false);
   });
 });
 

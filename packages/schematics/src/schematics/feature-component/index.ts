@@ -38,9 +38,9 @@ export interface FeatureComponentOptions {
 
 export function featureComponent(options: FeatureComponentOptions): Rule {
   return chain([
-    (tree: Tree) => {
+    async (tree: Tree) => {
       const ctx = domainContext(tree, options.domain);
-      const layerDir = ensureEntryPoint(tree, ctx, 'feature');
+      const layerDir = await ensureEntryPoint(tree, ctx, 'feature');
       const n = names(options.name, ctx.ws.prefix);
       const sub = subPath(options.path, n.fileName);
       const dir = `${layerDir}/${sub}`;
@@ -68,7 +68,7 @@ export function featureComponent(options: FeatureComponentOptions): Rule {
       }
 
       if (options.routed) {
-        const { routes } = createFeatureset(tree, ctx);
+        const { routes } = await createFeatureset(tree, ctx);
         const route = options.route ?? n.fileName.replace(/-page$/, '');
         const added = editTs(tree, routes, (file) => {
           const array =
@@ -86,7 +86,7 @@ export function featureComponent(options: FeatureComponentOptions): Rule {
       }
 
       if (options.slot) {
-        const { provide } = createFeatureset(tree, ctx);
+        const { provide } = await createFeatureset(tree, ctx);
         const fn = `provide${names(ctx.domain).className}Feature`;
         const slotSpecifier =
           options.slotDomain && options.slotDomain !== ctx.domain

@@ -11,9 +11,21 @@
       "x-prompt": "What is the domain called (a noun)?"
     },
     "layers": {
-      "type": "string",
-      "default": "provide,feature,ui,data,model",
-      "description": "The layers it starts with, comma-separated."
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "The layers it starts with (--layers ui,model). Required when there is no terminal to ask on.",
+      "x-prompt": {
+        "message": "Which layers does the domain start with?",
+        "type": "list",
+        "multiselect": true,
+        "items": [
+          { "value": "provide", "label": "provide: the featureset, routes, nav entries, slot registrations" },
+          { "value": "feature", "label": "feature: smart components, routed pages" },
+          { "value": "ui", "label": "ui: presentational components, pipes, slots" },
+          { "value": "data", "label": "data: stores, API access, workers" },
+          { "value": "model", "label": "model: types, constants, pure functions" }
+        ]
+      }
     },
     "deps": {
       "type": "string",

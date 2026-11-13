@@ -12,3 +12,4 @@ export * from './workspace';
 export { SchematicsException } from '@angular-devkit/schematics';
 export * from './ts-edit';
 export { SyntaxKind } from 'ts-morph';
+export * from './prompt';

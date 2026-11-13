@@ -12,9 +12,9 @@ export interface StoreOptions {
 
 export function store(options: StoreOptions): Rule {
   return chain([
-    (tree: Tree) => {
+    async (tree: Tree) => {
       const ctx = domainContext(tree, options.domain);
-      const layerDir = ensureEntryPoint(tree, ctx, 'data');
+      const layerDir = await ensureEntryPoint(tree, ctx, 'data');
       const n = names(options.name);
       const noun = (options.path ?? n.fileName).replace(/^\/+|\/+$/g, '');
       const dir = `${layerDir}/${noun}`;

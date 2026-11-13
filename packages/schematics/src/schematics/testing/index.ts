@@ -1,5 +1,5 @@
 import { chain, type Rule, type Tree } from '@angular-devkit/schematics';
-import { domainContext, ensureEntryPoint, format } from '../common';
+import { createEntryPoint, domainContext, format } from '../common';
 
 export interface TestingOptions {
   domain: string;
@@ -9,7 +9,7 @@ export interface TestingOptions {
 export function testing(options: TestingOptions): Rule {
   return chain([
     (tree: Tree) => {
-      ensureEntryPoint(tree, domainContext(tree, options.domain), 'testing');
+      createEntryPoint(tree, domainContext(tree, options.domain), 'testing');
     },
     format(),
   ]);

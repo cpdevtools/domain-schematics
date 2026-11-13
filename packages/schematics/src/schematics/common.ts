@@ -8,6 +8,8 @@ import { join } from 'node:path';
 import {
   addExport,
   addPackageEntryPoint,
+  canPrompt,
+  confirm,
   domainDir,
   domainPackage,
   editSheriffConfig,
@@ -56,14 +58,43 @@ export function templates(schematicDir: string, name = 'files'): string {
 
 /**
  * Makes sure a domain has an entry point: the folder with its `index.ts`, the `exports` entry, and
- * its line in Sheriff's `domains`. Returns the folder.
+ * its line in Sheriff's `domains`. A missing layer is created only after asking; without a terminal
+ * to ask on it refuses and names the command that adds the layer. Returns the folder.
  */
-export function ensureEntryPoint(tree: Tree, ctx: DomainContext, entryPoint: string): string {
+export async function ensureEntryPoint(
+  tree: Tree,
+  ctx: DomainContext,
+  entryPoint: string,
+): Promise<string> {
   if (!isEntryPoint(entryPoint)) {
     throw new SchematicsException(
       `"${entryPoint}" is not a layer. The layers are ${ENTRY_POINTS.join(', ')}.`,
     );
   }
+  const dir = `${ctx.dir}/${entryPoint}`;
+  const index = `${dir}/index.ts`;
+  if (!tree.exists(index)) {
+    const add =
+      entryPoint === 'testing'
+        ? `ng g testing ${ctx.domain}`
+        : `ng g layer ${ctx.domain} ${entryPoint}`;
+    if (!canPrompt()) {
+      throw new SchematicsException(
+        `The domain "${ctx.domain}" has no ${entryPoint} layer. Add it first: \`${add}\`.`,
+      );
+    }
+    const yes = await confirm(`The domain "${ctx.domain}" has no ${entryPoint} layer. Create it?`);
+    if (!yes)
+      throw new SchematicsException(
+        `Stopped: "${ctx.domain}" has no ${entryPoint} layer (\`${add}\` adds it).`,
+      );
+    createEntryPoint(tree, ctx, entryPoint);
+  }
+  return dir;
+}
+
+/** Adds an entry point without asking: the folder, the `exports` entry and the Sheriff line. */
+export function createEntryPoint(tree: Tree, ctx: DomainContext, entryPoint: EntryPoint): string {
   const dir = `${ctx.dir}/${entryPoint}`;
   const index = `${dir}/index.ts`;
   if (!tree.exists(index)) tree.create(index, 'export {};\n');
